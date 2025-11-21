@@ -1,4 +1,5 @@
 require 'facter/util/cache'
+require 'facter/util/factercache'
 
 # Class Caching helper
 module Facter::Util::Caching
@@ -7,8 +8,13 @@ module Facter::Util::Caching
   def initialize
     super
 
-    @blocked     = false
-    @initial_run = true
+    @usefacter_cache = true
+    @blocked         = false
+    @initial_run     = true
+  end
+
+  def usefacter_cache(usefacter_cache = true)
+    @usefacter_cache = usefacter_cache
   end
 
   def cache_for(number, unit)
@@ -33,6 +39,25 @@ module Facter::Util::Caching
 
   def initial_run?(run)
     @initial_run = run
+  end
+
+  # Setcode with caching, and with the option to allow fallback to the puppet original caching.
+  def setcode_c(name)
+    raise 'cache_for or cache_on_changed is not set, this much be set for caches to work' unless @validity
+    fact_cache = Facter::Util::Cache.new(name, @validity, @on_changed_val, @on_changed_type_val)
+    Facter::Util::Factercache.new(name, @validity, @on_changed_val, @on_changed_type_val) unless @usefacter_cache
+
+    if @usefacter_cache && ((fact_cache.valid? || blocked?) && fact_cache.forced? == false )
+      # If the cache is valid or execution blocked by a time boundry, AND we are
+      # not being forced to run, return the cached value
+      setcode do
+        fact_cache.value
+      end
+    else # @usefacter_cache = false, we always run the original setcode.
+      setcode do
+        fact_cache.set(yield) #original setcode
+      end
+    end
   end
 
   def cache(name)
