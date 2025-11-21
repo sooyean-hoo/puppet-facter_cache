@@ -100,7 +100,7 @@ module Facter::Util
 
     def content
       return {} unless exists?
-      YAML.load_file(yaml_file)
+      YAML.load_file(yaml_file, permitted_classes: [Time, Symbol])
     end
 
     private
