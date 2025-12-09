@@ -67,7 +67,7 @@ module Facter::Util::Caching
     if (fact_cache.valid? || blocked?) && fact_cache.forced? == false
       # If the cache is valid or execution blocked by a time boundry, AND we are
       # not being forced to run, return the cached value
-      setcode do
+      setcode_c(name) do
         fact_cache.value
       end
     else
