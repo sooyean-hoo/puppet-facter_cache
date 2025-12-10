@@ -47,15 +47,21 @@ module Facter::Util::Caching
     fact_cache = Facter::Util::Cache.new(name, @validity, @on_changed_val, @on_changed_type_val)
     Facter::Util::Factercache.new(name, @validity, @on_changed_val, @on_changed_type_val) unless @usefacter_cache
 
-    if @usefacter_cache && ((fact_cache.valid? || blocked?) && fact_cache.forced? == false )
-      # If the cache is valid or execution blocked by a time boundry, AND we are
-      # not being forced to run, return the cached value
+    if ! @usefacter_cache
       setcode do
-        fact_cache.value
+        yield
       end
-    else # @usefacter_cache = false, we always run the original setcode.
-      setcode do
-        fact_cache.set(yield) #original setcode
+    else
+      if (fact_cache.valid? || blocked?) && fact_cache.forced? == false
+        # If the cache is valid or execution blocked by a time boundry, AND we are
+        # not being forced to run, return the cached value
+        setcode do
+          fact_cache.value
+        end
+      else # @usefacter_cache = false, we always run the original setcode.
+        setcode do
+          fact_cache.set(yield) #original setcode
+        end
       end
     end
   end
