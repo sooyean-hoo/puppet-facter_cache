@@ -47,6 +47,7 @@ module Facter::Util::Caching
     fact_cache = Facter::Util::Cache.new(name, @validity, @on_changed_val, @on_changed_type_val)
     Facter::Util::Factercache.new(name, @validity, @on_changed_val, @on_changed_type_val) unless @usefacter_cache
 
+    @usefacter_cache = true if @usefacter_cache.nil?
     if !@usefacter_cache
       setcode do
         yield
@@ -68,6 +69,7 @@ module Facter::Util::Caching
     raise 'cache_for or cache_on_changed is not set, this much be set for caches to work' unless @validity
     fact_cache = Facter::Util::Cache.new(name, @validity, @on_changed_val, @on_changed_type_val)
 
+    @usefacter_cache = true if @usefacter_cache.nil?
     if !@usefacter_cache
       setcode_c(name) do
         yield
