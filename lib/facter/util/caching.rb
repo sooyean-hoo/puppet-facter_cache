@@ -70,7 +70,7 @@ module Facter::Util::Caching
 
     if !@usefacter_cache
       setcode_c(name) do
-        fact_cache.value
+        yield
       end
     elsif (fact_cache.valid? || blocked?) && fact_cache.forced? == false
       # If the cache is valid or execution blocked by a time boundry, AND we are
