@@ -102,7 +102,7 @@ module Facter::Util
       return {} unless exists?
       begin
         YAML.load_file(yaml_file, permitted_classes: [Time, Symbol])
-      rescue => e
+      rescue
         YAML.load_file(yaml_file)
       end
     end
