@@ -32,3 +32,4 @@
 .plan_cache.json
 .rerun.json
 bolt-debug.log
+**/.*.dat
