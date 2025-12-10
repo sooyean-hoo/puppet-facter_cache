@@ -21,6 +21,7 @@ module Facter::Util
     end
     def ensure_file
       return if File.exist?(file_path)
+      default_content=''
       FileUtils.mkdir_p(File.dirname(file_path))
       File.write(file_path, default_content)
     end
