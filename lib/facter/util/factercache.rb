@@ -27,7 +27,7 @@ module Facter::Util
     end
     private
     def puppetapplycmdttl(name, validation_seconds)
-      `mkdir -p -m 0644 $(dirname #{file_path} )  && #{  Puppet.settings[:vardir].gsub(/cache$/, 'bin')        }/puppet resource pe_hocon_setting  '#{name}' path=#{file_path}  ensure=present value='#{validation_seconds} seconds' type=string`
+      `mkdir -p -m 0644 $(dirname #{file_path} )  && #{  Puppet.settings[:vardir].gsub(/cache$/, 'bin')        }/puppet resource pe_hocon_setting  'facts.ttls.#{name}' path=#{file_path}  ensure=present value='#{validation_seconds} seconds' type=string`
     end
   end
 end
